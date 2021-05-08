@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-void main() => runApp(MaterialApp(home: MyApp()));
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(MaterialApp(home: MyApp()));
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -30,12 +33,18 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body:
-        SafeArea(
-          child: InAppWebView(
-            onWebViewCreated: (InAppWebViewController controller){
-              controller.postUrl(url: 'https://nazeer-choice.web.app/',
-              postData:  utf8.encode(data + token));})));
+
+    return Scaffold(
+      body: SafeArea(
+        child: InAppWebView(
+          initialUrl: 'https://nazeer-choice.web.app/?token=' + token,
+          // onWebViewCreated: (InAppWebViewController controller){
+          //   controller.postUrl(url: 'https://nazeer-choice.web.app/'
+          //       ,postData: utf8.encode(data + token));
+          // },
+        ),
+      ),
+    );
   }
 
   Future _showNotification(Map<String, dynamic> message) async {
@@ -59,8 +68,11 @@ class MyAppState extends State<MyApp> {
   }
 
   getTokenz() async {
-    String token = await _firebaseMessaging.getToken();
+    token = await _firebaseMessaging.getToken();
     print(token);
+    setState(() {
+
+    });
   }
 
   Future selectNotification(String payload) async {
@@ -103,7 +115,5 @@ class MyAppState extends State<MyApp> {
             });
       },
     );
-
-    getTokenz();
   }
 }
