@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 void main() => runApp(MaterialApp(home: MyApp()));
@@ -17,19 +20,22 @@ Future<dynamic> myBackgroundHandler(Map<String, dynamic> message) {
 
 class MyAppState extends State<MyApp> {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  FlutterLocalNotificationsPlugin();
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+  var token = "";
+
+  var data = "token=";
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('notification'),
-      ),
-      body: Center(
-        child: Text('button'),
-      ),
-    );
+    return Scaffold(body:
+        SafeArea(
+          child: InAppWebView(
+            onWebViewCreated: (InAppWebViewController controller){
+              controller.postUrl(url: 'https://nazeer-choice.web.app/',
+              postData:  utf8.encode(data + token));})));
   }
 
   Future _showNotification(Map<String, dynamic> message) async {
@@ -42,7 +48,7 @@ class MyAppState extends State<MyApp> {
     );
 
     var platformChannelSpecifics =
-        new NotificationDetails(android: androidPlatformChannelSpecifics);
+    new NotificationDetails(android: androidPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.show(
       0,
       'new message arived',
@@ -63,11 +69,13 @@ class MyAppState extends State<MyApp> {
 
   @override
   void initState() {
+
+    getTokenz();
     var initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+    AndroidInitializationSettings('@mipmap/ic_launcher');
 
     var initializationSettings =
-        InitializationSettings(android: initializationSettingsAndroid);
+    InitializationSettings(android: initializationSettingsAndroid);
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: selectNotification);
     super.initState();
