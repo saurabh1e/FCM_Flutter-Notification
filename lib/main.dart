@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:toast/toast.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,16 +29,19 @@ class MyAppState extends State<MyApp> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   var token = "";
-
-  var data = "token=";
+  // var initialUrl = "https://nazeer-choice.web.app/?token=";
+  var initialUrl = "https://link.posify.in/?token=";
 
   @override
   Widget build(BuildContext context) {
-
+    initialUrl = initialUrl + token;
+    Future.delayed(Duration.zero, () async {
+      Toast.show(initialUrl, context,duration: 5);
+    });
     return Scaffold(
       body: SafeArea(
         child: InAppWebView(
-          initialUrl: 'https://nazeer-choice.web.app/?token=' + token,
+          initialUrl: initialUrl,
           // onWebViewCreated: (InAppWebViewController controller){
           //   controller.postUrl(url: 'https://nazeer-choice.web.app/'
           //       ,postData: utf8.encode(data + token));
